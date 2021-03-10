@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import './Screens/place_list.dart';
-import './Providers/Great_Places.dart';
+import './providers/great_places.dart';
 import './Screens/add_places.dart';
+import './Screens/place_list.dart';
 
-void main() {
-  runApp(MyApp());
-}
+void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   @override
@@ -15,15 +13,15 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider.value(
       value: GreatPlaces(),
       child: MaterialApp(
-        title: 'Great Places',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          primaryColor: Colors.indigo,
-          accentColor: Colors.amber,
-        ),
-        home: PlaceList(),
-        routes: {AddPlaces.routeName: (ctx) => AddPlaces()},
-      ),
+          title: 'Great Places',
+          theme: ThemeData(
+            primarySwatch: Colors.indigo,
+            accentColor: Colors.amber,
+          ),
+          home: PlacesListScreen(),
+          routes: {
+            AddPlaceScreen.routeName: (ctx) => AddPlaceScreen(),
+          }),
     );
   }
 }

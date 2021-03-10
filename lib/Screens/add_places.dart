@@ -1,57 +1,76 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../Widgets/Image_inPuts.dart';
+import '../Widgets/Location_inPuts.dart';
 
-class AddPlaces extends StatefulWidget {
-  static String routeName = '/Add=Places';
+import '../providers/great_places.dart';
+
+class AddPlaceScreen extends StatefulWidget {
+  static const routeName = '/add-place';
+
   @override
-  _AddPlacesState createState() => _AddPlacesState();
+  _AddPlaceScreenState createState() => _AddPlaceScreenState();
 }
 
-class _AddPlacesState extends State<AddPlaces> {
-  final titleController = TextEditingController();
+class _AddPlaceScreenState extends State<AddPlaceScreen> {
+  final _titleController = TextEditingController();
+  File _pickedImage;
+
+  void _selectImage(File pickedImage) {
+    _pickedImage = pickedImage;
+  }
+
+  void _savePlace() {
+    if (_titleController.text.isEmpty || _pickedImage == null) {
+      return;
+    }
+    Provider.of<GreatPlaces>(context, listen: false)
+        .addPlace(_titleController.text, _pickedImage);
+    Navigator.of(context).pop();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add Places'),
+        title: Text('Add a New Place'),
       ),
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           Expanded(
-            child: Padding(
-              padding: EdgeInsets.all(10.0),
-              child: SingleChildScrollView(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.all(10),
                 child: Column(
                   children: <Widget>[
                     TextField(
                       decoration: InputDecoration(labelText: 'Title'),
-                      controller: titleController,
+                      controller: _titleController,
                     ),
                     SizedBox(
-                      height: 20,
+                      height: 10,
                     ),
-                    ImageInPut()
+                    ImageInput(_selectImage),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    LocationInPuts(),
                   ],
                 ),
               ),
             ),
           ),
-          Container(
-            height: 50,
-            child: RaisedButton.icon(
-              elevation: 0,
-              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              onPressed: () {},
-              icon: Icon(Icons.add),
-              color: Theme.of(context).accentColor,
-              label: Text(
-                "Add New Place",
-              ),
-            ),
+          RaisedButton.icon(
+            icon: Icon(Icons.add),
+            label: Text('Add Place'),
+            onPressed: _savePlace,
+            elevation: 0,
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            color: Theme.of(context).accentColor,
           ),
         ],
       ),
